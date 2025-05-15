@@ -1,0 +1,33 @@
+import pickle
+import yaml
+import os
+import hashlib
+
+# Vulnérabilité 1 : Utilisation explicite de eval
+def dangerous_eval(user_input):
+    return eval(user_input)  # B307: use_of_eval
+
+# Vulnérabilité 2 : Désérialisation pickle
+def dangerous_pickle(file_path):
+    with open(file_path, 'rb') as f:
+        return pickle.load(f)  # B403: import_pickle
+
+# Vulnérabilité 3 : Désérialisation YAML non sécurisée
+def dangerous_yaml(file_path):
+    with open(file_path, 'r') as f:
+        return yaml.load(f, Loader=yaml.Loader)  # B506: yaml_load
+
+# Vulnérabilité 4 : Commande shell
+def dangerous_shell(command):
+    os.system(command)  # B605: start_process_with_no_shell
+
+# Vulnérabilité 5 : Hash faible
+def weak_hash(password):
+    return hashlib.md5(password.encode()).hexdigest()  # B303: use_of_insecure_md5
+
+if __name__ == "__main__":
+    dangerous_eval("print('Hello, world!')")
+    dangerous_pickle("config.pkl")
+    dangerous_yaml("config.yaml")
+    dangerous_shell("ls -la")
+    weak_hash("mypassword")
